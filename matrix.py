@@ -73,9 +73,10 @@ origin = config['LOCATION']['HOME']
 destination = config['LOCATION']['WORK']
 ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36'
 bustime_api_key = config['MUNI']['API_KEY']
-stops = config['MUNI']['STOPS']
 on_hour = config['MATRIX']['ON_HOUR']
 off_hour = config['MATRIX']['OFF_HOUR']
+stop_id = config['MUNI']['STOP_ID']
+line_id = config['MUNI']['LINE_ID']
 
 ####
 # Fonts
@@ -94,7 +95,7 @@ minecraftia = ImageFont.truetype("fonts/Minecraftia-Regular.ttf", 8)
 pixelmix = ImageFont.truetype("fonts/pixelmix.ttf", 8)
 zero4b = ImageFont.truetype("fonts/zero4b.ttf", 8)
 pixelated = ImageFont.truetype("fonts/pixelated.ttf", 8)
-
+dot = ImageFont.truetype("fonts/dot.ttf", 20)
 ####
 # Methods
 ####
@@ -145,7 +146,7 @@ def getNextTrainsImage():
     # This function accesses the San Francisco SFMTA
     # This returns an object with the next 2 trains for a stop
     requests.packages.urllib3.disable_warnings()
-    nextbus = requests.get("http://webservices.nextbus.com/service/publicJSONFeed?command=predictions&a=sf-muni&r=N&s=5197&useShortTitles=true")
+    nextbus = requests.get("http://webservices.nextbus.com/service/publicJSONFeed?command=predictions&a=sf-muni&r=" + line_id + "&s=" + str(stop_id) + "&useShortTitles=true")
     nextbus_json = nextbus.json()
 
     trains = parseTrainsJSON(nextbus_json)
@@ -252,17 +253,59 @@ def getDriveImage():
     driveDraw.text((65,16), driveTime, font=pf, fill=(0,255,255))
     return driveImage
 
+def getCurrentUberRide():
+    uber_ride = requests.get("https://api.uber.com/v1.2/requests/current?access_token=" + config['UBER']['ACCESS_TOKEN'])
+    if uber_ride.status_code == 404:
+        return None
+    else:
+        return uber_ride.json()
+
+def getUberRideImage():
+    ride = getCurrentUberRide()
+    if ride is None:
+        return None
+    else:
+        status = ride['status']
+        if status is "accepted" or "arriving":
+            driver_name = ride['driver']['name']
+            rating = ride['driver']['rating']
+            driver_text = driver_name + ' ' + str(rating) + ' stars'
+            make = ride['vehicle']['make']
+            model = ride['vehicle']['model']
+            car_text = make + ' ' + model
+            eta = ride['pickup']['eta']
+            eta_text = 'Arriving in ' + str(eta) + ' min'
+            license_plate = ride['vehicle']['license_plate']
+            uberImage = Image.new("RGB", (128,32))
+            uberDraw = ImageDraw.Draw(uberImage)
+            uberDraw.text((3,2), "UBER", font=dot, fill=(0,255,255))
+            uberDraw.text((40,3), car_text, font=pixelated, fill=(255,0,255))
+            uberDraw.text((96,3), license_plate, font=pixelated, fill=(0,255,255))
+            uberDraw.text((5,16), driver_text, font=pixelated, fill=(0,255,255))
+            uberDraw.text((74,16), eta_text, font=pixelated, fill=(255,0,255))
+            return uberImage
+        else:
+            return None
+
 def drawFPS(image):
     if image is None:
         break
     else:
         matrix.Clear()
         matrix.SetImage(image, 0, 0)
-        time.sleep(10)
+        time.sleep(8)
 
 def checkOffHours()
     now = datetime.now()
     return (now.hour < on_hour or now.hour > off_hour)
+
+def drawUberPriority():
+    while True:
+        image = getUberRideImage()
+        if image is None:
+            break
+        drawFPS(image)
+
 
 ####
 # Create
@@ -279,7 +322,8 @@ try:
         if checkOffHours():
             matrix.Clear()
             time.sleep(60)
-        else:     
+        else:
+            drawUberPriority()
             drawFPS(getWeatherImage())
             drawFPS(getDriveImage())
             drawFPS(getNextTrainsImage())
