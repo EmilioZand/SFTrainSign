@@ -53,13 +53,7 @@ options.brightness = int(config['MATRIX']['BRIGHTNESS'])
 # Configuration for Spotify
 ####
 sp = spotipy.Spotify()
-scope = 'user-read-currently-playing user-read-playback-state'
-token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
-if token:
-    sp = spotipy.Spotify(auth=token)
-    print "Spotify authenticated for user ezmang"
-else:
-    print "Can't get token for ezmang"
+configSpotify()
 
 ####
 # Configuration for Gmaps
@@ -100,6 +94,14 @@ dot = ImageFont.truetype("fonts/dot.ttf", 20)
 ####
 # Methods
 ####
+def configSpotify():
+    scope = 'user-read-currently-playing user-read-playback-state'
+    token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
+    if token:
+        sp = spotipy.Spotify(auth=token)
+        print "Spotify authenticated for user ezmang"
+    else:
+        print "Can't get token for ezmang"
 
 def round_decimal(x):
     return Decimal(x).quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
@@ -220,7 +222,12 @@ def getWeatherImage():
     return weatherImage
 
 def getSpotifyImage():
-    now_playing = sp.current_user_playing_track()
+    try:
+        now_playing = sp.current_user_playing_track()
+    except Exception:
+        configSpotify()
+        now_playing = sp.current_user_playing_track()
+
     if now_playing and now_playing['is_playing']:
         title = now_playing['item']['name']
         artists = ''
