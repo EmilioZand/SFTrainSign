@@ -216,6 +216,7 @@ def getWeatherImage():
     return weatherImage
 
 def getSpotifyImage():
+    now_playing = {'is_playing': False}
     try:
         now_playing = sp.current_user_playing_track()
     except Exception:
