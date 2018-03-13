@@ -48,13 +48,6 @@ options.cols = int(config['MATRIX']['COLS'])
 options.chain_length =  int(config['MATRIX']['CHAIN_LENGTH'])
 options.hardware_mapping = config['MATRIX']['HARDWARE_MAPPING']
 options.brightness = int(config['MATRIX']['BRIGHTNESS'])
-
-####
-# Configuration for Spotify
-####
-sp = spotipy.Spotify()
-configSpotify()
-
 ####
 # Configuration for Gmaps
 ####
@@ -95,6 +88,7 @@ dot = ImageFont.truetype("fonts/dot.ttf", 20)
 # Methods
 ####
 def configSpotify():
+    sp = spotipy.Spotify()
     scope = 'user-read-currently-playing user-read-playback-state'
     token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
     if token:
@@ -226,7 +220,6 @@ def getSpotifyImage():
         now_playing = sp.current_user_playing_track()
     except Exception:
         configSpotify()
-        now_playing = sp.current_user_playing_track()
 
     if now_playing and now_playing['is_playing']:
         title = now_playing['item']['name']
@@ -323,7 +316,7 @@ def drawUberPriority():
 # Create
 ####
 matrix = RGBMatrix(options = options)
-
+configSpotify()
 ####
 # Call the Function(s) to create content and write this to the Matrix
 ####
