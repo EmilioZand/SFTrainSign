@@ -295,7 +295,7 @@ def drawFPS(image):
         matrix.SetImage(image, 0, 0)
         time.sleep(8)
 
-def checkOffHours()
+def checkOffHours():
     now = datetime.now()
     return (now.hour < on_hour or now.hour > off_hour)
 
