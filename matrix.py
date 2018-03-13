@@ -46,7 +46,7 @@ options.rows = int(config['MATRIX']['ROWS'])
 options.cols = int(config['MATRIX']['COLS'])
 options.chain_length =  int(config['MATRIX']['CHAIN_LENGTH'])
 options.hardware_mapping = config['MATRIX']['HARDWARE_MAPPING']
-options.brightness = int(config['MATRIX']['HARDWARE_MAPPING'])
+options.brightness = int(config['MATRIX']['BRIGHTNESS'])
 
 ####
 # Configuration for Spotify
