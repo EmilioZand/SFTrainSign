@@ -53,7 +53,7 @@ options.brightness = int(config['MATRIX']['BRIGHTNESS'])
 ####
 sp = spotipy.Spotify()
 scope = 'user-read-currently-playing user-read-playback-state'
-token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['DEFAULT']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
+token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
 if token:
     sp = spotipy.Spotify(auth=token)
     print "Spotify authenticated for user ezmang"
