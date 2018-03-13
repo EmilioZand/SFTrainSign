@@ -74,8 +74,8 @@ origin = config['LOCATION']['HOME']
 destination = config['LOCATION']['WORK']
 ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36'
 bustime_api_key = config['MUNI']['API_KEY']
-on_hour = config['MATRIX']['ON_HOUR']
-off_hour = config['MATRIX']['OFF_HOUR']
+on_hour = int(config['MATRIX']['ON_HOUR'])
+off_hour = int(config['MATRIX']['OFF_HOUR'])
 stop_id = config['MUNI']['STOP_ID']
 line_id = config['MUNI']['LINE_ID']
 
