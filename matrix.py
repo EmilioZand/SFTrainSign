@@ -289,7 +289,7 @@ def getUberRideImage():
 
 def drawFPS(image):
     if image is None:
-        break
+        return
     else:
         matrix.Clear()
         matrix.SetImage(image, 0, 0)
