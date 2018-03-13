@@ -205,13 +205,18 @@ def getWeatherImage():
     weatherDraw = ImageDraw.Draw(weatherImage)
     weatherText = WeatherUpdate()
     weatherIcon = Image.open('weather/' + weatherText['icon'] + '.png').convert('RGBA')
-    weatherIcon = weatherIcon.resize((18, 18))
-    weatherImage.paste(weatherIcon, (4, 15))
+    icon_length = 16
+    weatherIcon = weatherIcon.resize((icon_length, icon_length))
+    (w,h) = weatherDraw.textsize(str(weatherText['condition']), font=pixelmix)
+    condition_x = (options.cols - (icon_length + 3 + w))/2
+    condition_y = (options.rows/2 - icon_length)/2 + options.cols/2
+    weatherImage.paste(weatherIcon, (condition_x, condition_y))
+    weatherDraw.text((condition_x+icon_length+2,condition_y), str(weatherText['condition']), font=pixelmix, fill=(0,255,255))
+
     weatherDraw.text((3,3), "High:", font=minecraft, fill=(255,0,255))
     weatherDraw.text((43,3), str(weatherText['high']), font=minecraft, fill=(255,0,255))
     weatherDraw.text((67,3), "Low:", font=minecraft, fill=(0,255,255))
     weatherDraw.text((107,3), str(weatherText['low']), font=minecraft, fill=(0,255,255))
-    weatherDraw.text((25,19), str(weatherText['condition']), font=pixelmix, fill=(0,255,255))
 
     return weatherImage
 
