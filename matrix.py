@@ -42,11 +42,11 @@ config.read('config.ini')
 # Configuration for the matrix
 ####
 options = RGBMatrixOptions()
-options.rows = config['MATRIX']['ROWS']
-options.cols = config['MATRIX']['COLS']
-options.chain_length =  config['MATRIX']['CHAIN_LENGTH']
+options.rows = int(config['MATRIX']['ROWS'])
+options.cols = int(config['MATRIX']['COLS'])
+options.chain_length =  int(config['MATRIX']['CHAIN_LENGTH'])
 options.hardware_maping = config['MATRIX']['HARDWARE_MAPPING']
-options.brightness = config['MATRIX']['HARDWARE_MAPPING']
+options.brightness = int(config['MATRIX']['HARDWARE_MAPPING'])
 
 ####
 # Configuration for Spotify
