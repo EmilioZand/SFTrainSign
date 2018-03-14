@@ -325,6 +325,7 @@ try:
     print("Press CTRL-C to stop.")
     while True:
         if checkOffHours():
+            print "Matrix is off due to Off hours"
             matrix.Clear()
             time.sleep(60)
         else:
