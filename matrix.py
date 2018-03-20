@@ -237,7 +237,7 @@ def getSpotifyImage():
     except spotipy.client.SpotifyException:
         # re-authenticate when token expires
         refresh_token()
-        now_playing = sp.current_user_playing_track()
+        return None
 
     if now_playing and now_playing['is_playing']:
         title = now_playing['item']['name']
