@@ -331,7 +331,7 @@ def drawUberPriority():
 # Create
 ####
 matrix = RGBMatrix(options = options)
-configSpotify()
+
 ####
 # Call the Function(s) to create content and write this to the Matrix
 ####
