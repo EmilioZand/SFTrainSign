@@ -237,22 +237,22 @@ def getSpotifyImage():
         now_playing = sp.current_user_playing_track()
 
     if now_playing and now_playing['is_playing']:
-            title = now_playing['item']['name']
-            artists = ''
-            count = 0
-            for artist in now_playing['item']['artists']:
-                if count > 0:
-                    artists += ', '
-                artists += (artist['name'])
-                count += 1
+        title = now_playing['item']['name']
+        artists = ''
+        count = 0
+        for artist in now_playing['item']['artists']:
+            if count > 0:
+                artists += ', '
+            artists += (artist['name'])
+            count += 1
 
-            spotifyImage = Image.open("images/spotify.png").convert('RGB')
-            spotifyDraw = ImageDraw.Draw(spotifyImage)
-            spotifyDraw.text((40,3), title, font=minecraftia, fill=(0, 255, 255))
-            spotifyDraw.text((40,18), artists, font=minecraftia, fill=(255, 0, 255))
-            return spotifyImage
-        else:
-            return None
+        spotifyImage = Image.open("images/spotify.png").convert('RGB')
+        spotifyDraw = ImageDraw.Draw(spotifyImage)
+        spotifyDraw.text((40,3), title, font=minecraftia, fill=(0, 255, 255))
+        spotifyDraw.text((40,18), artists, font=minecraftia, fill=(255, 0, 255))
+        return spotifyImage
+    else:
+        return None
 
 def getDriveTime():
     now = datetime.now()
