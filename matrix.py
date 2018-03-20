@@ -213,20 +213,23 @@ def getWeatherImage():
     weatherImage = Image.new("RGB", (128,32))
     weatherDraw = ImageDraw.Draw(weatherImage)
     weatherText = WeatherUpdate()
-    weatherIcon = Image.open('weather/' + weatherText['icon'] + '.png').convert('RGBA')
-    icon_length = 16
-    weatherIcon = weatherIcon.resize((icon_length, icon_length))
-    (w,h) = weatherDraw.textsize(str(weatherText['condition']), font=pixelmix)
-    condition_x = (128 - (icon_length + 3 + w))/2
-    weatherImage.paste(weatherIcon, (condition_x, 16))
-    weatherDraw.text(((condition_x + icon_length + 3), 18), str(weatherText['condition']), font=pixelmix, fill=(0,255,255))
+    try:
+        weatherIcon = Image.open('weather/' + weatherText['icon'] + '.png').convert('RGBA')
+        icon_length = 16
+        weatherIcon = weatherIcon.resize((icon_length, icon_length))
+        (w,h) = weatherDraw.textsize(str(weatherText['condition']), font=pixelmix)
+        condition_x = (128 - (icon_length + 3 + w))/2
+        weatherImage.paste(weatherIcon, (condition_x, 16))
+        weatherDraw.text(((condition_x + icon_length + 3), 18), str(weatherText['condition']), font=pixelmix, fill=(0,255,255))
 
-    weatherDraw.text((3,3), "High:", font=minecraft, fill=(255,0,255))
-    weatherDraw.text((41,3), str(weatherText['high']), font=minecraft, fill=(255,0,255))
-    weatherDraw.text((67,3), "Low:", font=minecraft, fill=(0,255,255))
-    weatherDraw.text((104,3), str(weatherText['low']), font=minecraft, fill=(0,255,255))
+        weatherDraw.text((3,3), "High:", font=minecraft, fill=(255,0,255))
+        weatherDraw.text((41,3), str(weatherText['high']), font=minecraft, fill=(255,0,255))
+        weatherDraw.text((67,3), "Low:", font=minecraft, fill=(0,255,255))
+        weatherDraw.text((104,3), str(weatherText['low']), font=minecraft, fill=(0,255,255))
 
-    return weatherImage
+        return weatherImage
+    except:
+        return None
 
 def getSpotifyImage():
     try:
