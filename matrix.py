@@ -54,6 +54,19 @@ options.brightness = int(config['MATRIX']['BRIGHTNESS'])
 gmaps = googlemaps.Client(key=config['LOCATION']['GOOGLE_API'])
 
 ####
+# Configuration for Spotify
+####
+sp = spotipy.Spotify()
+scope = 'user-read-currently-playing user-read-playback-state'
+token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
+if token:
+    sp = spotipy.Spotify(auth=token)
+    print ("Spotify authenticated for user " + config['SPOTIFY']['USERNAME'])
+    now_playing = sp.current_user_playing_track()
+else:
+    print ("Can't get token for user " + config['SPOTIFY']['USERNAME'])
+
+####
 # Variables
 ####
 my_zip = config['LOCATION']['ZIP']   # US Zip Code used in the weather module
@@ -87,15 +100,15 @@ dot = ImageFont.truetype("fonts/dot.ttf", 20)
 ####
 # Methods
 ####
-def configSpotify():
+def refresh_token():
     sp = spotipy.Spotify()
     scope = 'user-read-currently-playing user-read-playback-state'
     token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
     if token:
         sp = spotipy.Spotify(auth=token)
-        print "Spotify authenticated for user ezmang"
+        print ("Spotify authenticated for user " + config['SPOTIFY']['USERNAME'])
     else:
-        print "Can't get token for ezmang"
+        print ("Can't get token for user " + config['SPOTIFY']['USERNAME'])
 
 def round_decimal(x):
     return Decimal(x).quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
@@ -218,7 +231,12 @@ def getWeatherImage():
 def getSpotifyImage():
     try:
         now_playing = sp.current_user_playing_track()
-        if now_playing and now_playing['is_playing']:
+    except spotipy.client.SpotifyException:
+        # re-authenticate when token expires
+        refresh_token()
+        now_playing = sp.current_user_playing_track()
+
+    if now_playing and now_playing['is_playing']:
             title = now_playing['item']['name']
             artists = ''
             count = 0
@@ -235,9 +253,6 @@ def getSpotifyImage():
             return spotifyImage
         else:
             return None
-    except Exception:
-        configSpotify()
-        return None
 
 def getDriveTime():
     now = datetime.now()
