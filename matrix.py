@@ -153,6 +153,7 @@ def parseTrainsJSON(trains):
               {'line': route_tag, 'destination': train2_title, 'minutes': train2['minutes']}]
 
 def getNextTrainsImage():
+    print "Getting Transit Info..."
     # This function accesses the San Francisco SFMTA
     # This returns an object with the next 2 trains for a stop
     requests.packages.urllib3.disable_warnings()
@@ -178,6 +179,7 @@ def getNextTrainsImage():
     return trainImage
 
 def getCryptoImage():
+    print "Getting Crypto Info..."
     requests.packages.urllib3.disable_warnings()
     coinmarketcap = requests.get("https://api.coinmarketcap.com/v1/ticker/?limit=4")
     cryptos = coinmarketcap.json()
@@ -210,6 +212,7 @@ def WeatherUpdate():
         return '* Weather ERROR - Web Call *'
 
 def getWeatherImage():
+    print "Getting Weather Info..."
     weatherImage = Image.new("RGB", (128,32))
     weatherDraw = ImageDraw.Draw(weatherImage)
     weatherText = WeatherUpdate()
@@ -232,6 +235,7 @@ def getWeatherImage():
         return None
 
 def getSpotifyImage():
+    print "Getting Spotify Info..."
     try:
         now_playing = sp.current_user_playing_track()
     except spotipy.client.SpotifyException:
@@ -263,6 +267,7 @@ def getDriveTime():
     return directions_result[0]['legs'][0]['duration_in_traffic']['text']
 
 def getDriveImage():
+    print "Getting Navigation Info..."
     now = datetime.now()
     if now.hour > 12 and now.weekday() > 4:
         return None
@@ -284,6 +289,7 @@ def getCurrentUberRide():
         return uber_ride.json()
 
 def getUberRideImage():
+    print "Getting Uber Info..."
     ride = getCurrentUberRide()
     if ride is None:
         return None
