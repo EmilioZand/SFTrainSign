@@ -156,46 +156,51 @@ def getNextTrainsImage():
     print "Getting Transit Info..."
     # This function accesses the San Francisco SFMTA
     # This returns an object with the next 2 trains for a stop
-    requests.packages.urllib3.disable_warnings()
-    nextbus = requests.get("http://webservices.nextbus.com/service/publicJSONFeed?command=predictions&a=sf-muni&r=" + line_id + "&s=" + str(stop_id) + "&useShortTitles=true")
-    nextbus_json = nextbus.json()
+    try:
+        requests.packages.urllib3.disable_warnings()
+        nextbus = requests.get("http://webservices.nextbus.com/service/publicJSONFeed?command=predictions&a=sf-muni&r=" + line_id + "&s=" + str(stop_id) + "&useShortTitles=true")
+        nextbus_json = nextbus.json()
 
-    trains = parseTrainsJSON(nextbus_json)
+        trains = parseTrainsJSON(nextbus_json)
 
-    trainImage = Image.new("RGB", (128, 32))  # Can be larger than matrix if wanted!!
-    trainDraw = ImageDraw.Draw(trainImage)  # Declare Draw instance before prims
+        trainImage = Image.new("RGB", (128, 32))  # Can be larger than matrix if wanted!!
+        trainDraw = ImageDraw.Draw(trainImage)  # Declare Draw instance before prims
 
-    trainDraw.ellipse((5, 3, 15, 13), fill=(4, 82, 156))
-    trainDraw.ellipse((5, 19, 15, 29), fill=(4, 82, 156))
-    trainDraw.text((8,3), trains[0]['line'], font=vcr, fill=(0, 0, 0))
-    trainDraw.text((8,19), trains[1]['line'], font=vcr, fill=(0, 0, 0))
-    trainDraw.text((19,5), trains[0]['destination'], font=zero4b, fill=(0, 255, 255))
-    trainDraw.text((19,20), trains[1]['destination'], font=zero4b, fill=(0, 255, 255))
-    trainDraw.text((97,4), trains[0]['minutes'], font=pixelmix, fill=(255, 0, 255))
-    trainDraw.text((97, 19), trains[1]['minutes'], font=pixelmix, fill=(255, 0, 255))
-    trainDraw.text((110,3), "min", font=pixelmix, fill=(0, 255, 255))
-    trainDraw.text((110,19), "min", font=pixelmix, fill=(0, 255, 255))
+        trainDraw.ellipse((5, 3, 15, 13), fill=(4, 82, 156))
+        trainDraw.ellipse((5, 19, 15, 29), fill=(4, 82, 156))
+        trainDraw.text((8,3), trains[0]['line'], font=vcr, fill=(0, 0, 0))
+        trainDraw.text((8,19), trains[1]['line'], font=vcr, fill=(0, 0, 0))
+        trainDraw.text((19,5), trains[0]['destination'], font=zero4b, fill=(0, 255, 255))
+        trainDraw.text((19,20), trains[1]['destination'], font=zero4b, fill=(0, 255, 255))
+        trainDraw.text((97,4), trains[0]['minutes'], font=pixelmix, fill=(255, 0, 255))
+        trainDraw.text((97, 19), trains[1]['minutes'], font=pixelmix, fill=(255, 0, 255))
+        trainDraw.text((110,3), "min", font=pixelmix, fill=(0, 255, 255))
+        trainDraw.text((110,19), "min", font=pixelmix, fill=(0, 255, 255))
 
-    return trainImage
-
+        return trainImage
+    except:
+        return None
 def getCryptoImage():
     print "Getting Crypto Info..."
-    requests.packages.urllib3.disable_warnings()
-    coinmarketcap = requests.get("https://api.coinmarketcap.com/v1/ticker/?limit=4")
-    cryptos = coinmarketcap.json()
-    cryptoImage = Image.new("RGB", (128, 32))  # Can be larger than matrix if wanted!!
-    cryptoDraw = ImageDraw.Draw(cryptoImage)  # Declare Draw instance before prims
+    try:
+        requests.packages.urllib3.disable_warnings()
+        coinmarketcap = requests.get("https://api.coinmarketcap.com/v1/ticker/?limit=4")
+        cryptos = coinmarketcap.json()
+        cryptoImage = Image.new("RGB", (128, 32))  # Can be larger than matrix if wanted!!
+        cryptoDraw = ImageDraw.Draw(cryptoImage)  # Declare Draw instance before prims
 
-    cryptoDraw.text((3,3), cryptos[0]['symbol'], font=pixelmix, fill=(0, 255, 255))
-    cryptoDraw.text((24,3), cryptos[0]['price_usd'][:7], font=pixelmix, fill=(0, 255, 255))
-    cryptoDraw.text((67,3), cryptos[1]['symbol'], font=pixelmix, fill=(255, 0, 255))
-    cryptoDraw.text((89,3), cryptos[1]['price_usd'][:7], font=pixelmix, fill=(255, 0, 255))
-    cryptoDraw.text((3,18), cryptos[2]['symbol'], font=pixelmix, fill=(255, 0, 255))
-    cryptoDraw.text((24,18), cryptos[2]['price_usd'][:7], font=pixelmix, fill=(255, 0, 255))
-    cryptoDraw.text((67,18), cryptos[3]['symbol'], font=pixelmix, fill=(0, 255, 255))
-    cryptoDraw.text((89,18), cryptos[3]['price_usd'][:7], font=pixelmix, fill=(0, 255, 255))
+        cryptoDraw.text((3,3), cryptos[0]['symbol'], font=pixelmix, fill=(0, 255, 255))
+        cryptoDraw.text((24,3), cryptos[0]['price_usd'][:7], font=pixelmix, fill=(0, 255, 255))
+        cryptoDraw.text((67,3), cryptos[1]['symbol'], font=pixelmix, fill=(255, 0, 255))
+        cryptoDraw.text((89,3), cryptos[1]['price_usd'][:7], font=pixelmix, fill=(255, 0, 255))
+        cryptoDraw.text((3,18), cryptos[2]['symbol'], font=pixelmix, fill=(255, 0, 255))
+        cryptoDraw.text((24,18), cryptos[2]['price_usd'][:7], font=pixelmix, fill=(255, 0, 255))
+        cryptoDraw.text((67,18), cryptos[3]['symbol'], font=pixelmix, fill=(0, 255, 255))
+        cryptoDraw.text((89,18), cryptos[3]['price_usd'][:7], font=pixelmix, fill=(0, 255, 255))
 
-    return cryptoImage
+        return cryptoImage
+    except:
+        return None
 
 def WeatherUpdate():
     headers = {'User-Agent': ua}
@@ -268,18 +273,21 @@ def getDriveTime():
 
 def getDriveImage():
     print "Getting Navigation Info..."
-    now = datetime.now()
-    if now.hour > 12 and now.weekday() > 4:
-        return None
+    try:
+        now = datetime.now()
+        if now.hour > 12 and now.weekday() > 4:
+            return None
 
-    driveImage = Image.new("RGB", (128,32))
-    driveDraw = ImageDraw.Draw(driveImage)
-    driveTime = getDriveTime()
-    carIcon = Image.open('images/car.png')
-    driveImage.paste(carIcon, (5, 6))
-    driveDraw.text((50,1), "Time to Work:", font=pf, fill=(0,255,255))
-    driveDraw.text((65,16), driveTime, font=pf, fill=(0,255,255))
-    return driveImage
+        driveImage = Image.new("RGB", (128,32))
+        driveDraw = ImageDraw.Draw(driveImage)
+        driveTime = getDriveTime()
+        carIcon = Image.open('images/car.png')
+        driveImage.paste(carIcon, (5, 6))
+        driveDraw.text((50,1), "Time to Work:", font=pf, fill=(0,255,255))
+        driveDraw.text((65,16), driveTime, font=pf, fill=(0,255,255))
+        return driveImage
+    except:
+        return None
 
 def getCurrentUberRide():
     uber_ride = requests.get("https://api.uber.com/v1.2/requests/current?access_token=" + config['UBER']['ACCESS_TOKEN'])
