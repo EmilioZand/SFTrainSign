@@ -179,6 +179,7 @@ def getNextTrainsImage():
 
         return trainImage
     except:
+        logging.exception("Exception in getNextTrainsImage()")
         return None
 def getCryptoImage():
     print "Getting Crypto Info..."
@@ -200,6 +201,7 @@ def getCryptoImage():
 
         return cryptoImage
     except:
+        logging.exception("Exception in getCryptoImage()")
         return None
 
 def WeatherUpdate():
@@ -237,6 +239,7 @@ def getWeatherImage():
 
         return weatherImage
     except:
+        logging.exception("Exception in getWeatherImage()")
         return None
 
 def getSpotifyImage():
@@ -244,6 +247,7 @@ def getSpotifyImage():
     try:
         now_playing = sp.current_user_playing_track()
     except spotipy.client.SpotifyException:
+        logging.exception("Exception in getSpotifyImage() getting token")
         # re-authenticate when token expires
         refresh_token()
         return None
@@ -264,6 +268,7 @@ def getSpotifyImage():
         spotifyDraw.text((40,18), artists, font=minecraftia, fill=(255, 0, 255))
         return spotifyImage
     else:
+        logging.exception("Exception in getSpotifyImage()")
         return None
 
 def getDriveTime():
@@ -287,42 +292,52 @@ def getDriveImage():
         driveDraw.text((65,16), driveTime, font=pf, fill=(0,255,255))
         return driveImage
     except:
+        logging.exception("Exception in getDriveImage()")
         return None
 
 def getCurrentUberRide():
-    uber_ride = requests.get("https://api.uber.com/v1.2/requests/current?access_token=" + config['UBER']['ACCESS_TOKEN'])
-    if uber_ride.status_code == 404:
+    try:
+        uber_ride = requests.get("https://api.uber.com/v1.2/requests/current?access_token=" + config['UBER']['ACCESS_TOKEN'])
+        if uber_ride.status_code == 404:
+            return None
+        else:
+            return uber_ride.json()
+    except:
+        logging.exception("Exception in getCurrentUberRide()")
         return None
-    else:
-        return uber_ride.json()
 
 def getUberRideImage():
     print "Getting Uber Info..."
-    ride = getCurrentUberRide()
-    if ride is None:
-        return None
-    else:
-        status = ride['status']
-        if status is "accepted" or "arriving":
-            driver_name = ride['driver']['name']
-            rating = ride['driver']['rating']
-            driver_text = driver_name + ' ' + str(rating) + ' stars'
-            make = ride['vehicle']['make']
-            model = ride['vehicle']['model']
-            car_text = make + ' ' + model
-            eta = ride['pickup']['eta']
-            eta_text = 'Arriving in ' + str(eta) + ' min'
-            license_plate = ride['vehicle']['license_plate']
-            uberImage = Image.new("RGB", (128,32))
-            uberDraw = ImageDraw.Draw(uberImage)
-            uberDraw.text((3,2), "UBER", font=dot, fill=(0,255,255))
-            uberDraw.text((40,3), car_text, font=pixelated, fill=(255,0,255))
-            uberDraw.text((96,3), license_plate, font=pixelated, fill=(0,255,255))
-            uberDraw.text((5,16), driver_text, font=pixelated, fill=(0,255,255))
-            uberDraw.text((74,16), eta_text, font=pixelated, fill=(255,0,255))
-            return uberImage
-        else:
+    try:
+        ride = getCurrentUberRide()
+        if ride is None:
             return None
+        else:
+            status = ride['status']
+            if status is "accepted" or "arriving":
+                driver_name = ride['driver']['name']
+                rating = ride['driver']['rating']
+                driver_text = driver_name + ' ' + str(rating) + ' stars'
+                make = ride['vehicle']['make']
+                model = ride['vehicle']['model']
+                car_text = make + ' ' + model
+                eta = ride['pickup']['eta']
+                eta_text = 'Arriving in ' + str(eta) + ' min'
+                license_plate = ride['vehicle']['license_plate']
+                uberImage = Image.new("RGB", (128,32))
+                uberDraw = ImageDraw.Draw(uberImage)
+                uberDraw.text((3,2), "UBER", font=dot, fill=(0,255,255))
+                uberDraw.text((40,3), car_text, font=pixelated, fill=(255,0,255))
+                uberDraw.text((96,3), license_plate, font=pixelated, fill=(0,255,255))
+                uberDraw.text((5,16), driver_text, font=pixelated, fill=(0,255,255))
+                uberDraw.text((74,16), eta_text, font=pixelated, fill=(255,0,255))
+                return uberImage
+            else:
+                return None
+    except:
+        logging.exception("Exception in getUberRideImage()")
+        return None
+
 
 def drawFPS(image):
     if image is None:
