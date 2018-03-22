@@ -102,3 +102,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# nohup logs
+nohup.out
+
+# spotify cache
+.cache-*
