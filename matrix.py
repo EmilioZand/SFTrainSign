@@ -97,6 +97,7 @@ pixelmix = ImageFont.truetype("fonts/pixelmix.ttf", 8)
 zero4b = ImageFont.truetype("fonts/zero4b.ttf", 8)
 pixelated = ImageFont.truetype("fonts/pixelated.ttf", 8)
 dot = ImageFont.truetype("fonts/dot.ttf", 20)
+clock = ImageFont.truetype("fonts/Pixeled.ttf", 20)
 ####
 # Methods
 ####
@@ -264,7 +265,6 @@ def getSpotifyImage():
         spotifyDraw.text((40,18), artists, font=minecraftia, fill=(255, 0, 255))
         return spotifyImage
     else:
-        logging.exception("Exception in getSpotifyImage()")
         return None
 
 def getDriveTime():
@@ -332,6 +332,19 @@ def getUberRideImage():
         logging.exception("Exception in getUberRideImage()")
         return None
 
+def getTimeImage():
+    try:
+        now = datetime.now()
+        timeImage = Image.new("RGB", (128,32))
+        timeDraw = ImageDraw.Draw(timeImage)
+        timeDraw.text((5,-16), now.strftime("%I"), font=clock, fill=(0,255,255))
+        timeDraw.text((33,-16), ':', font=clock, fill=(255,0,255))
+        timeDraw.text((40,-16), now.strftime("%M"), font=clock, fill=(0,255,255))
+        timeDraw.text((85,-16), now.strftime("%p"), font=clock, fill=(255,0,255))
+        return timeImage
+    except:
+        logging.exception("Exception in getDriveImage()")
+        return None
 
 def drawFPS(image):
     if image is None:
@@ -376,6 +389,7 @@ try:
             drawFPS(getNextTrainsImage())
             drawFPS(getSpotifyImage())
             drawFPS(getCryptoImage())
+            drawFPS(getTimeImage())
 except KeyboardInterrupt:
     sys.exit(0)
 except Exception:
