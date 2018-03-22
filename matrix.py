@@ -22,9 +22,8 @@ import logging
 import logging.handlers
 import os
 import configparser
-import spotipy
-import spotipy.util as util
 import googlemaps
+from spotify import Spotify
 
 ####
 # System Config
@@ -52,19 +51,6 @@ options.brightness = int(config['MATRIX']['BRIGHTNESS'])
 # Configuration for Gmaps
 ####
 gmaps = googlemaps.Client(key=config['LOCATION']['GOOGLE_API'])
-
-####
-# Configuration for Spotify
-####
-sp = spotipy.Spotify()
-scope = 'user-read-currently-playing user-read-playback-state'
-token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
-if token:
-    sp = spotipy.Spotify(auth=token)
-    print ("Spotify authenticated for user " + config['SPOTIFY']['USERNAME'])
-    now_playing = sp.current_user_playing_track()
-else:
-    print ("Can't get token for user " + config['SPOTIFY']['USERNAME'])
 
 ####
 # Variables
@@ -101,15 +87,6 @@ clock = ImageFont.truetype("fonts/Pixeled.ttf", 20)
 ####
 # Methods
 ####
-def refresh_token():
-    sp = spotipy.Spotify()
-    scope = 'user-read-currently-playing user-read-playback-state'
-    token = util.prompt_for_user_token(config['SPOTIFY']['USERNAME'], scope,client_id=config['SPOTIFY']['CLIENT_ID'] ,client_secret=config['SPOTIFY']['CLIENT_SECRET'] , redirect_uri=config['SPOTIFY']['REDIRECT_URI'])
-    if token:
-        sp = spotipy.Spotify(auth=token)
-        print ("Spotify authenticated for user " + config['SPOTIFY']['USERNAME'])
-    else:
-        print ("Can't get token for user " + config['SPOTIFY']['USERNAME'])
 
 def round_decimal(x):
     return Decimal(x).quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
@@ -240,14 +217,13 @@ def getWeatherImage():
         logging.exception("Exception in getWeatherImage()")
         return None
 
-def getSpotifyImage():
+def getSpotifyImage(spotify):
     try:
-        now_playing = sp.current_user_playing_track()
-    except spotipy.client.SpotifyException:
-        logging.exception("Exception in getSpotifyImage() getting token")
-        # re-authenticate when token expires
-        refresh_token()
-        return None
+        now_playing = spotify.get_now_playing()
+    except:
+        now_playing = None
+        logging.exception("Exception in getSpotifyImage()")
+
 
     if now_playing and now_playing['is_playing']:
         title = now_playing['item']['name']
@@ -370,7 +346,7 @@ def drawUberPriority():
 # Create
 ####
 matrix = RGBMatrix(options = options)
-
+sp = Spotify()
 ####
 # Call the Function(s) to create content and write this to the Matrix
 ####
@@ -387,7 +363,7 @@ try:
             drawFPS(getWeatherImage())
             drawFPS(getDriveImage())
             drawFPS(getNextTrainsImage())
-            drawFPS(getSpotifyImage())
+            drawFPS(getSpotifyImage(sp))
             drawFPS(getCryptoImage())
             drawFPS(getTimeImage())
 except KeyboardInterrupt:
