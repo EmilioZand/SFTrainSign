@@ -313,10 +313,13 @@ def getTimeImage():
         now = datetime.now()
         timeImage = Image.new("RGB", (128,32))
         timeDraw = ImageDraw.Draw(timeImage)
-        timeDraw.text((5,-16), now.strftime("%l"), font=clock, fill=(0,255,255))
-        timeDraw.text((33,-16), ':', font=clock, fill=(255,0,255))
-        timeDraw.text((40,-16), now.strftime("%M"), font=clock, fill=(0,255,255))
-        timeDraw.text((85,-16), now.strftime("%p"), font=clock, fill=(255,0,255))
+        time_text = now.strftime("%l:%M")
+        am_pm_text = now.strftime("%p")
+        (time_width, h) = timeDraw.textsize(time_text, font=clock)
+        (am_pm_width, h) = timeDraw.textsize(am_pm_text, font=clock)
+        time_x = (128 - (time_width + 5 + am_pm_width))/2
+        timeDraw.text((time_x,-16), time_text, font=clock, fill=(0,255,255))
+        timeDraw.text(((time_x + time_width + 5),-16), am_pm_text, font=clock, fill=(255,0,255))
         return timeImage
     except:
         logging.exception("Exception in getDriveImage()")
