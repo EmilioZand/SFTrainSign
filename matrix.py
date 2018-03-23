@@ -360,10 +360,10 @@ try:
             time.sleep(60)
         else:
             drawUberPriority()
+            drawFPS(getSpotifyImage(sp))
             drawFPS(getWeatherImage())
             drawFPS(getDriveImage())
             drawFPS(getNextTrainsImage())
-            drawFPS(getSpotifyImage(sp))
             drawFPS(getCryptoImage())
             drawFPS(getTimeImage())
 except KeyboardInterrupt:
