@@ -14,6 +14,7 @@
 import spotipy
 import spotipy.util as util
 import configparser
+import time
 
 ####
 # System Config
@@ -49,3 +50,26 @@ class Spotify:
             self.now_playing = None
             self.refresh_token()
         return self.now_playing
+
+
+"""
+# Test Code
+sp = Spotify()
+try:
+    print("Press CTRL-C to stop.")
+    while True:
+        now_playing = sp.get_now_playing()
+        print( now_playing['item']['name'])
+        artists = ''
+        count = 0
+        for artist in now_playing['item']['artists']:
+            if count > 0:
+                artists += ', '
+            artists += (artist['name'])
+            count += 1
+        print artists
+
+        time.sleep(10)
+except KeyboardInterrupt:
+    sys.exit(0)
+"""

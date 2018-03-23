@@ -313,7 +313,7 @@ def getTimeImage():
         now = datetime.now()
         timeImage = Image.new("RGB", (128,32))
         timeDraw = ImageDraw.Draw(timeImage)
-        timeDraw.text((5,-16), now.strftime("%I"), font=clock, fill=(0,255,255))
+        timeDraw.text((5,-16), now.strftime("%l"), font=clock, fill=(0,255,255))
         timeDraw.text((33,-16), ':', font=clock, fill=(255,0,255))
         timeDraw.text((40,-16), now.strftime("%M"), font=clock, fill=(0,255,255))
         timeDraw.text((85,-16), now.strftime("%p"), font=clock, fill=(255,0,255))
